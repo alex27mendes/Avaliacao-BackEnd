@@ -1,0 +1,9 @@
+ProjectBackend.Test/bin/
+ProjectBackend.Test/obj/
+ProjectBackendTest.Model/bin/
+ProjectBackendTest.Model/obj/
+ProjectBackendTest.Repositorio/bin/Debug/
+ProjectBackendTest.Repositorio/obj/
+ProjectBackendTest/obj/
+ProjectBackendTest.Service/obj/
+ProjectBackendTest/bin/
