@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjectBackendTest.DAL.Context;
 using ProjectBackendTest.Model;
+using ProjectBackendTest.Repository.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProjectBackendTest.DAL
+namespace ProjectBackendTest.Repository
 {
     public class PessoaRepository : IPessoaRepository
     {

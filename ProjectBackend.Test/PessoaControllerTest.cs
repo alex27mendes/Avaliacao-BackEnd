@@ -2,11 +2,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using ProjectBackendTest.Controllers;
-using ProjectBackendTest.DAL;
 using ProjectBackendTest.Model;
 using ProjectBackendTest.Models.Request;
+using ProjectBackendTest.Repository;
 using ProjectBackendTest.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -317,7 +316,7 @@ namespace ProjectBackend.Test
 
             Mock<IPessoaService> mockPessoaService = new Mock<IPessoaService>();
             var controller = new PessoasController(mockPessoaService.Object);
-            controller.ModelState.AddModelError("Nome", "O email é obrigatório.");
+            controller.ModelState.AddModelError("Email", "O email é obrigatório.");
             var result = controller.PostPessoa(request) as BadRequestObjectResult;
 
             Assert.IsNotNull(result);

@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using ProjectBackendTest.DAL;
-using ProjectBackendTest.DAL.Context;
 using ProjectBackendTest.Model;
+using ProjectBackendTest.Repository;
+using ProjectBackendTest.Repository.Context;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -8,8 +8,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ProjectBackendTest.DAL.Context;
 using ProjectBackendTest.Model;
+using ProjectBackendTest.Repository.Context;
 
 namespace ProjectBackendTest
 {

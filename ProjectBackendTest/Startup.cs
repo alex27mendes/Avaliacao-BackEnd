@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ProjectBackendTest.DAL;
-using ProjectBackendTest.DAL.Context;
+using ProjectBackendTest.Repository;
+using ProjectBackendTest.Repository.Context;
 using ProjectBackendTest.Services;
 
 namespace ProjectBackendTest

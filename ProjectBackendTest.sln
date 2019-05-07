@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBackendTest", "ProjectBackendTest\ProjectBackendTest.csproj", "{04B20F54-1259-4BBA-B904-F16ADECD49C9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBackendTest.DAL", "ProjectBackendTest.Repositorio\ProjectBackendTest.DAL.csproj", "{32A3B190-A250-4C4D-95E4-AF2DF33D5CFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBackendTest.Repository", "ProjectBackendTest.Repositorio\ProjectBackendTest.Repository.csproj", "{32A3B190-A250-4C4D-95E4-AF2DF33D5CFD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectBackendTest.Model", "ProjectBackendTest.Model\ProjectBackendTest.Model.csproj", "{39C749DD-1DA8-4224-AFC8-A64F3AFD60D0}"
 EndProject

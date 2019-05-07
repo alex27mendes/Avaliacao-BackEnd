@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ProjectBackendTest.DAL;
 using ProjectBackendTest.Model;
 using ProjectBackendTest.Models.Request;
 using ProjectBackendTest.Services;

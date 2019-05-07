@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectBackendTest.Model\ProjectBackendTest.Model.csproj" />
-    <ProjectReference Include="..\ProjectBackendTest.Repositorio\ProjectBackendTest.DAL.csproj" />
+    <ProjectReference Include="..\ProjectBackendTest.Repositorio\ProjectBackendTest.Repository.csproj" />
   </ItemGroup>
 
 </Project>

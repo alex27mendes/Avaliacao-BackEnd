@@ -1,8 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using ProjectBackendTest.DAL;
 using ProjectBackendTest.Model;
 using ProjectBackendTest.Models.Request;
+using ProjectBackendTest.Repository;
 using ProjectBackendTest.Services;
 using System;
 using System.Collections.Generic;

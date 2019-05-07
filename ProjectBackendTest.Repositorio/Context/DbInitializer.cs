@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProjectBackendTest.DAL.Context
+namespace ProjectBackendTest.Repository.Context
 {
     public static class DbInitializer
     {
