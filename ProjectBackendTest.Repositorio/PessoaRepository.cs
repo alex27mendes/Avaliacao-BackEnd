@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjectBackendTest.Repository.Context;
+using ProjectBackendTest.DAL.Context;
 using ProjectBackendTest.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProjectBackendTest.Repository
+namespace ProjectBackendTest.DAL
 {
     public class PessoaRepository : IPessoaRepository
     {
@@ -16,11 +16,15 @@ namespace ProjectBackendTest.Repository
         {
             _context = context;
         }
-        public bool Remove(Func<Pessoa, bool> predicate)
+        public bool Remove(Pessoa pessoa)
         {
-            _context.Set<Pessoa>()
-            .Where(predicate).ToList()
-            .ForEach(del => _context.Set<Pessoa>().Remove(del));
+            Endereco endereco = _context.Enderecos.Where(e => e.IdPessoaFK == pessoa.Id).FirstOrDefault();
+
+            if (endereco != null)
+            {
+                _context.Enderecos.Remove(endereco);
+            }
+            _context.Pessoas.Remove(pessoa);
             _context.SaveChanges();
             return true;
         }
@@ -73,7 +77,8 @@ namespace ProjectBackendTest.Repository
                 res.Endereco.UF = pessoa.Endereco.UF;
                 res.Endereco.Cep = pessoa.Endereco.Cep;
                 res.Endereco.Complemento = pessoa.Endereco.Complemento;
-            }    
+            }
+            _context.Update(res);
             _context.SaveChanges();
             return true;
         }
@@ -88,7 +93,7 @@ namespace ProjectBackendTest.Repository
         }
         public Pessoa Find(int key)
         {
-            var pessoa = _context.Set<Pessoa>().Find(key);
+            var pessoa = _context.Pessoas.Where(x => x.Id == key).FirstOrDefault();
             if (pessoa != null)
             {
                 pessoa.Endereco = _context.Enderecos.FirstOrDefault(x => x.IdPessoaFK == pessoa.Id);

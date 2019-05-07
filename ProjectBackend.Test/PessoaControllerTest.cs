@@ -2,10 +2,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using ProjectBackendTest.Controllers;
-using ProjectBackendTest.Repository;
+using ProjectBackendTest.DAL;
 using ProjectBackendTest.Model;
 using ProjectBackendTest.Models.Request;
-using ProjectBackendTest.Repository;
+using ProjectBackendTest.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +18,7 @@ namespace ProjectBackend.Test
     {
         public readonly IPessoaRepository MockPessoaRepository;
 
+        Mock<IPessoaRepository> mockPessoaRepository = new Mock<IPessoaRepository>();
         public PessoaControllerTest()
         {
             List<Pessoa> pessoas = new List<Pessoa>
@@ -66,7 +67,6 @@ namespace ProjectBackend.Test
                 }
             };
 
-            Mock<IPessoaRepository> mockPessoaRepository = new Mock<IPessoaRepository>();
 
             mockPessoaRepository.Setup(mr => mr.GetAll()).Returns(pessoas);
 
@@ -78,7 +78,7 @@ namespace ProjectBackend.Test
                 It.IsAny<string>())).Returns((string s) => pessoas.Where(
                 x => x.Nome == s).Single());
 
-            mockPessoaRepository.Setup(r => r.Remove(It.IsAny<Func<Pessoa, bool>>()));
+            mockPessoaRepository.Setup(r => r.Remove(It.IsAny<Pessoa>()));
 
             mockPessoaRepository.Setup(mr => mr.Save(It.IsAny<Pessoa>())).Returns(
                 (Pessoa target) =>
@@ -115,27 +115,25 @@ namespace ProjectBackend.Test
         [TestMethod]
         public void TestPostPessoa()
         {
-           // Mock<IPessoaRepository> mockPessoaRepository = new Mock<IPessoaRepository>();
 
-           // var _pessoaRepository = new Mock<IPessoaRepository>(mockPessoaRepository);
-            var controller = new PessoasController(this.MockPessoaRepository);
+            Mock<IPessoaService> mockPessoaService = new Mock<IPessoaService>();
+            var controller = new PessoasController(mockPessoaService.Object);
             var item = GetDemoPessoa();
             var result = controller.PostPessoa(item) as CreatedAtActionResult;
-            //  var result = controller.PostPessoa(item) as OkObjectResult;
+
             Assert.IsNotNull(result);
             Assert.AreEqual(201, result.StatusCode);
             Assert.AreEqual(result.ActionName, "GetPessoa");
-            //Assert.AreEqual(result.RouteValues["id"], result.Content.Id);
-            //Assert.AreEqual(result.Content.Nome, item.Nome);
-            //  Assert.Pass();
+
         }
         
         [TestMethod]
         public async Task PutPessoa_ReturnOK()
-        { 
-            var controller = new PessoasController(this.MockPessoaRepository);
+        {
+            Mock<IPessoaService> mockPessoaService = new Mock<IPessoaService>();
+            var controller = new PessoasController(mockPessoaService.Object);
 
-           // var item = GetDemoPessoa();
+            // var item = GetDemoPessoa();
             var pessoa  = this.MockPessoaRepository.Find(1);
             var request = new PessoaRequest
             {
@@ -165,48 +163,37 @@ namespace ProjectBackend.Test
             Assert.IsNotNull(result);
             Assert.AreEqual(200, result.StatusCode);
         }
-        [TestMethod]
-        public async Task TestGetPessoaById()
-        {
-            var controller = new PessoasController(this.MockPessoaRepository);
-            var result = await controller.GetPessoa(1) as OkObjectResult;
-            Assert.IsNotNull(result);
-            Assert.AreEqual(200, result.StatusCode);
-        }
+        //[TestMethod]
+        //public async Task TestGetPessoaById()
+        //{
+        //    var mockService = new Mock<IPessoaService>();
+        //    var controller = new PessoasController(mockService.Object);
 
-        [TestMethod]
-        public void TestGetPessoas()
-        {
-            var pessoas = this.MockPessoaRepository.GetAll();
-            var total = pessoas.Count();
+        //    var pessoa = this.MockPessoaRepository.Find(1);
+        //    var result = await controller.GetPessoa(1) as OkObjectResult;
+        //    Assert.IsNotNull(result);
+        //    Assert.AreEqual(200, result.StatusCode);
+        //}
 
-            var controller = new PessoasController(this.MockPessoaRepository);
-            var result = controller.Getpessoas() as IEnumerable<Pessoa>;
+      // [TestMethod]
+        //public void TestGetPessoas()
+        //{
+        //    var pessoas = this.MockPessoaRepository.GetAll();
+        //    var total = pessoas.Count();
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(total, result.Count());
-        }
+        //    Mock<IPessoaService> mockPessoaService = new Mock<IPessoaService>(MockPessoaRepository);
+        //    var controller = new PessoasController(mockPessoaService.Object);
+        //    var result = controller.Getpessoas() as List<Pessoa>;
 
-        [TestMethod]
-        public async Task DeletePessoa_ReturnOK()
-        {
-            var item = this.MockPessoaRepository.Find(1);
-
-            var controller = new PessoasController(this.MockPessoaRepository);
-            var result = await controller.DeletePessoa(item.Id) as OkObjectResult;
-            var _pessoa = result.Value as Pessoa;
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual(item.Id, _pessoa.Id);
-
-            var itemDeletado = this.MockPessoaRepository.Find(1);
-            Assert.IsNotNull(itemDeletado);
-        }
+        //    Assert.IsNotNull(result);
+        //    Assert.AreEqual(total, result.Value.Count());
+        //}
         [TestMethod]
         public async Task TestPutPessoaNOK_IdInexistente()
         {
-            var controller = new PessoasController(this.MockPessoaRepository);
-
+            Mock<IPessoaService> mockPessoaService = new Mock<IPessoaService>();
+            var controller = new PessoasController(mockPessoaService.Object);
+            
             // var item = GetDemoPessoa();
             var pessoa = this.MockPessoaRepository.Find(1);
             var request = new PessoaRequest
@@ -238,22 +225,73 @@ namespace ProjectBackend.Test
             Assert.AreEqual(400, result.StatusCode);
         }
         [TestMethod]
+        public async Task GetReturnsNotFound()
+        {
+            // Arrange
+            Mock<IPessoaService> mockPessoaService = new Mock<IPessoaService>();
+            var controller = new PessoasController(mockPessoaService.Object);
+
+            // Act
+            var result = await controller.GetPessoa(10) as NotFoundResult;
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
+        [TestMethod]
         public async Task TestGetPessoaById_NOK()
         {
-            var controller = new PessoasController(this.MockPessoaRepository);
+            Mock<IPessoaService> mockPessoaService = new Mock<IPessoaService>();
+            var controller = new PessoasController(mockPessoaService.Object);
             var result = await controller.GetPessoa(30) as NotFoundResult;
             Assert.IsNotNull(result);
             Assert.AreEqual(404, result.StatusCode);
         }
+        [TestMethod]
+        public async Task TestDeleteReturnsOk()
+        {
+            // Arrange
+            var mockService = new Mock<IPessoaService>();
+            var controller = new PessoasController(mockService.Object);
+
+            var pessoa = this.MockPessoaRepository.Find(1);
+            // Act
+            var result = await controller.DeletePessoa(1) as OkObjectResult;
+
+            mockService.Verify(r => r.RemoverPessoa(pessoa.Id));
+
+            // Assert
+            //Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+        }
+        [TestMethod]
+        public void TestPostMethod()
+        {
+            // Arrange
+            var mockRepository = new Mock<IPessoaService>();
+            var controller = new PessoasController(mockRepository.Object);
+
+            // Act
+            var result = controller.PostPessoa(GetDemoPessoa())  as CreatedAtActionResult;
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(201, result.StatusCode);
+            Assert.AreEqual(result.ActionName, "GetPessoa");
+
+            
+        }
+
         [TestMethod]
         public async Task TesteNome_Pessoa_Vazio_NOK()
         {
 
             var request = new PessoaRequest { Nome = "" };
 
-            var controller = new PessoasController(this.MockPessoaRepository);
+            Mock<IPessoaService> mockPessoaService = new Mock<IPessoaService>();
+            var controller = new PessoasController(mockPessoaService.Object);
             controller.ModelState.AddModelError("Nome", "O nome é obrigatório.");
-            var result = controller.PostPessoa(request) as BadRequestObjectResult;
+            var result =  controller.PostPessoa(request) as BadRequestObjectResult;
+
+            Assert.IsNotNull(result);
             Assert.AreEqual(400, result.StatusCode);
 
         }
@@ -263,7 +301,8 @@ namespace ProjectBackend.Test
 
             var request = new PessoaRequest { Nome = "Inválido" };
 
-            var controller = new PessoasController(this.MockPessoaRepository);
+            Mock<IPessoaService> mockPessoaService = new Mock<IPessoaService>();
+            var controller = new PessoasController(mockPessoaService.Object);
             controller.ModelState.AddModelError("Nome", "O nome é invalido.");
             var result = controller.PostPessoa(request) as BadRequestObjectResult;
 
@@ -271,20 +310,21 @@ namespace ProjectBackend.Test
             Assert.AreEqual(400, result.StatusCode);
 
         }
-        [TestMethod]
-        public async Task TesteEmail_Vazio_NOK()
+        public async Task TesteNome_Email_Vazio_NOK()
         {
 
             var request = new PessoaRequest { Email = "" };
 
-            var controller = new PessoasController(this.MockPessoaRepository);
-            controller.ModelState.AddModelError("Email", "O email é obrigatório.");
+            Mock<IPessoaService> mockPessoaService = new Mock<IPessoaService>();
+            var controller = new PessoasController(mockPessoaService.Object);
+            controller.ModelState.AddModelError("Nome", "O email é obrigatório.");
             var result = controller.PostPessoa(request) as BadRequestObjectResult;
 
             Assert.IsNotNull(result);
             Assert.AreEqual(400, result.StatusCode);
-            
+
         }
+        
         PessoaRequest GetDemoPessoa()
         {
             return new PessoaRequest

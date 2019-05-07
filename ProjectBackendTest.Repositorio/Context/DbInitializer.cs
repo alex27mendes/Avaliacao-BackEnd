@@ -1,9 +1,10 @@
 ﻿using ProjectBackendTest.Model;
-using ProjectBackendTest.Repository.Context;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
-
-namespace ProjectBackendTest.Repository
+namespace ProjectBackendTest.DAL.Context
 {
     public static class DbInitializer
     {

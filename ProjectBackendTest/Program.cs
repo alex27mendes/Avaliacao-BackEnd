@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ProjectBackendTest.Repository.Context;
-using ProjectBackendTest.Repository;
+using ProjectBackendTest.DAL.Context;
+using ProjectBackendTest.Model;
 
 namespace ProjectBackendTest
 {

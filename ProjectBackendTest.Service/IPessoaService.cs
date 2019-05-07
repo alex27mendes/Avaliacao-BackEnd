@@ -8,9 +8,10 @@ namespace ProjectBackendTest.Services
     public interface IPessoaService
     {
         PessoaRequest GetPessoa(int Id);
-        List<Pessoa> GetPessoas();
+        List<PessoaRequest> GetPessoas();
         bool SalvarPessoa(PessoaRequest pessoaRequest);
         bool AtualizarPessoa(int Id, PessoaRequest pessoaRequest);
         bool RemoverPessoa(int Id);
+        Pessoa Find(int key);
     }
 }

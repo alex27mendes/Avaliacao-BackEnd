@@ -75,10 +75,37 @@ namespace ProjectBackendTest.Services
             return response;
         }
 
-        public List<Pessoa> GetPessoas()
+        public List<PessoaRequest> GetPessoas()
         {
+            List<PessoaRequest> responseList = new List<PessoaRequest>();
             var result = _pessoaRepository.GetAll();
-            return result;
+
+            foreach(Pessoa pessoa in result){
+                var response = new PessoaRequest
+                {
+                    Id = pessoa.Id,
+                    Nome = pessoa.Nome,
+                    Email = pessoa.Email,
+                    Telefone = pessoa.Telefone,
+                    DDD = pessoa.DDD,
+                    Endereco = new EnderecoRequest
+                    {
+                        Id = pessoa.Endereco.Id,
+                        Rua = pessoa.Endereco.Rua,
+                        Numero = pessoa.Endereco.Numero,
+                        Bairro = pessoa.Endereco.Bairro,
+                        Cidade = pessoa.Endereco.Cidade,
+                        Cep = pessoa.Endereco.Cep,
+                        UF = pessoa.Endereco.UF,
+                        Complemento = pessoa.Endereco.Complemento
+                    }
+
+                };
+                responseList.Add(response);
+
+            }
+
+            return responseList;
         }
 
         public bool RemoverPessoa(int Id)
@@ -86,9 +113,9 @@ namespace ProjectBackendTest.Services
             var pessoa = _pessoaRepository.Find(Id);
             if (pessoa == null)
             {
-                return false;
+                return true;
             }
-            var result = _pessoaRepository.Remove(c => c == pessoa);
+            var result = _pessoaRepository.Remove(pessoa);
             return result;
         }
 
@@ -116,6 +143,10 @@ namespace ProjectBackendTest.Services
             }
             return _pessoaRepository.Save(_pessoa);
 
+        }
+        public Pessoa Find(int key)
+        {
+            return _pessoaRepository.Find(key);
         }
     }
 }

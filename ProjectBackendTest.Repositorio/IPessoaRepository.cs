@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ProjectBackendTest.Repository
+namespace ProjectBackendTest.DAL
 {
     public interface IPessoaRepository
     {
@@ -12,7 +12,7 @@ namespace ProjectBackendTest.Repository
         List<Pessoa> GetAll();
         bool Save(Pessoa pessoa);
         bool Update(Pessoa pessoa);
-        bool Remove(Func<Pessoa, bool> predicate);
+        bool Remove(Pessoa pessoa);
         Pessoa Find(params object[] key);
         Pessoa Find(int key);
     }

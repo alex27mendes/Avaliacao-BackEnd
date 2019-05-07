@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ProjectBackendTest.Repository;
-using ProjectBackendTest.Repository.Context;
+using ProjectBackendTest.DAL;
+using ProjectBackendTest.DAL.Context;
+using ProjectBackendTest.Services;
 
 namespace ProjectBackendTest
 {
@@ -25,7 +26,9 @@ namespace ProjectBackendTest
             options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //services.AddMvc();
+            services.AddTransient<IPessoaService, PessoaService>();
             services.AddTransient<IPessoaRepository, PessoaRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

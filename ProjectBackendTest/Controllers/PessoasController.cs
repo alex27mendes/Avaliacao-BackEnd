@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ProjectBackendTest.Repository;
+using ProjectBackendTest.DAL;
 using ProjectBackendTest.Model;
 using ProjectBackendTest.Models.Request;
+using ProjectBackendTest.Services;
 
 namespace ProjectBackendTest.Controllers
 {
@@ -12,19 +13,20 @@ namespace ProjectBackendTest.Controllers
     [ApiController]
     public class PessoasController : ControllerBase
     {
-        private readonly IPessoaRepository _pessoaRepository;
+        private readonly IPessoaService _pessoaService;
+   
 
-        public PessoasController(IPessoaRepository pessoaRepository)
+        public PessoasController(IPessoaService pessoaService)
         {
-            _pessoaRepository = pessoaRepository;
+            _pessoaService = pessoaService;
         }
 
         // GET: api/Pessoas
         [HttpGet]
-        public IEnumerable<Pessoa> Getpessoas()
+        public  List<PessoaRequest> Getpessoas()
         {
-            var result = _pessoaRepository.GetAll();
-            return result;
+            var reponse = _pessoaService.GetPessoas();
+            return reponse;
         }
 
         //GET: api/Pessoas/5
@@ -35,36 +37,12 @@ namespace ProjectBackendTest.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var pessoa = _pessoaRepository.Find(id);
-
-
-
-            if (pessoa == null)
+            var response = _pessoaService.GetPessoa(id);
+            
+            if(response == null)
             {
                 return NotFound();
             }
-            var response = new PessoaRequest
-            {
-                Id = pessoa.Id,
-                Nome = pessoa.Nome,
-                Email = pessoa.Email,
-                Telefone = pessoa.Telefone,
-                DDD = pessoa.DDD,
-                Endereco = new EnderecoRequest
-                {
-                    Id = pessoa.Endereco.Id,
-                    Rua = pessoa.Endereco.Rua,
-                    Numero = pessoa.Endereco.Numero,
-                    Bairro = pessoa.Endereco.Bairro,
-                    Cidade = pessoa.Endereco.Cidade,
-                    Cep = pessoa.Endereco.Cep,
-                    UF = pessoa.Endereco.UF,
-                    Complemento = pessoa.Endereco.Complemento
-                }
-
-            };
-
             return Ok(response);
         }
 
@@ -84,31 +62,8 @@ namespace ProjectBackendTest.Controllers
 
             try
             {
-                var _pessoa = new Pessoa
-                {
-                    Id = id,
-                    Nome = request.Nome,
-                    Email = request.Email,
-                    Telefone = request.Telefone,
-                    DDD = request.DDD
-                };
-                if (request.Endereco != null)
-                {
-                    _pessoa.Endereco = new Model.Endereco
-                    {
-                        Rua = request.Endereco.Rua,
-                        Numero = request.Endereco.Numero,
-                        Bairro = request.Endereco.Bairro,
-                        Cidade = request.Endereco.Cidade,
-                        Cep = request.Endereco.Cep,
-                        UF = request.Endereco.UF,
-                        Complemento = request.Endereco.Complemento
-
-                    };
-                }
-
-                var result = _pessoaRepository.Update(_pessoa);
-                return Ok(_pessoa);
+                var response = _pessoaService.AtualizarPessoa(id, request);
+                return Ok(response);
             }
             catch (Exception e)
             {
@@ -130,28 +85,9 @@ namespace ProjectBackendTest.Controllers
 
             try
             {
-                var _pessoa = new Pessoa
-                {
-                    Nome = request.Nome,
-                    Email = request.Email,
-                    Telefone = request.Telefone,
-                    DDD = request.DDD
-                };
-                if (request.Endereco != null)
-                {
-                    _pessoa.Endereco = new Model.Endereco
-                    {
-                        Rua = request.Endereco.Rua,
-                        Numero = request.Endereco.Numero,
-                        Bairro = request.Endereco.Bairro,
-                        Cidade = request.Endereco.Cidade,
-                        Cep = request.Endereco.Cep,
-                        UF = request.Endereco.UF,
-                        Complemento = request.Endereco.Complemento
-                    };
-                }
-                _pessoaRepository.Save(_pessoa);
-                return CreatedAtAction("GetPessoa", new { id = _pessoa.Id }, _pessoa);
+                _pessoaService.SalvarPessoa(request);
+
+                return CreatedAtAction("GetPessoa", new { id = request.Id }, request);
             }
             catch (Exception e)
             {
@@ -170,14 +106,14 @@ namespace ProjectBackendTest.Controllers
                 return BadRequest(ModelState);
             }
 
-            var pessoa = _pessoaRepository.Find(id);
-            if (pessoa == null)
-            {
-                return NotFound();
-            }
-            var result =_pessoaRepository.Remove(c => c == pessoa);
+            var result = _pessoaService.RemoverPessoa(id);
 
-            return Ok(pessoa);
+            if (!result)
+            {
+                return NoContent();
+            }
+
+            return Ok();
         }
     }
 }

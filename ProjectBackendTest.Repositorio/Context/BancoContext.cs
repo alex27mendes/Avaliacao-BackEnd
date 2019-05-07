@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using ProjectBackendTest.Model;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
-namespace ProjectBackendTest.Repository.Context
+namespace ProjectBackendTest.DAL.Context
 {
     public class BancoContext : DbContext
     {
@@ -32,9 +35,6 @@ namespace ProjectBackendTest.Repository.Context
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //  base.OnModelCreating(builder);
-            //builder.Entity<Pessoa>().ToTable("Pessoa");
-            //builder.Entity<Endereco>().ToTable("Endereco");
             builder.Entity<Pessoa>()
                    .HasOne<Endereco>(s => s.Endereco)
                    .WithOne(ad => ad.Pessoa)
